@@ -1,30 +1,26 @@
+# **Guide d'Installation et de Déploiement**
 
-# Data Lake Project - Installation & Deployment
+## **1. Prérequis**
+Avant de commencer, assurez-vous d’avoir installé :
+- **Docker** et **Docker Compose**
+- **Git**
+- **Python 3.10**
+- **Pip et virtualenv** (si exécution locale de l'API)
 
-## Prérequis
+---
 
-Avant de commencer, assurez-vous d'avoir les outils suivants installés sur votre machine :
-
-- [Docker](https://www.docker.com/get-started)
-- [Docker Compose](https://docs.docker.com/compose/install/)
-- [Git](https://git-scm.com/downloads)
-- Python 3.10+ (si besoin d'exécuter des scripts en local)
-
-## 1. Cloner le dépôt
-
-Clonez le projet depuis le repository GitHub :
-
+## **2. Cloner le projet**
 ```bash
 git clone https://github.com/votre-repo/datalake-project.git
 cd datalake-project
+```
 
+---
 
-## 2. Configuration des fichiers
+## **3. Configuration des services**
 
-### 2.1 `.env` (Optionnel)
-
-Créez un fichier `.env` à la racine pour définir les variables d'environnement :
-
+### **3.1 Configuration des variables d’environnement**
+Créer un fichier `.env` à la racine du projet avec :
 ```ini
 MYSQL_HOST=mysql
 MYSQL_USER=root
@@ -35,158 +31,89 @@ MONGO_URI=mongodb://mongodb:27017/
 S3_ENDPOINT_URL=http://localstack:4566
 ```
 
-### 2.2 `docker-compose.yml`
+### **3.2 Vérifier `docker-compose.yml`**
+S’assurer que les services suivants sont bien définis :
+- **MySQL** (stockage des données intermédiaires)
+- **MongoDB** (stockage des données finales)
+- **LocalStack** (simule AWS S3)
+- **Airflow** (orchestration ETL)
+- **API FastAPI** (exposition des données)
 
-Assurez-vous que le fichier `docker-compose.yml` est bien configuré avec les services suivants :
+---
 
-```yaml
-version: '3.8'
-services:
-  mysql:
-    image: mysql:8.0
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=staging
-    ports:
-      - "3306:3306"
-
-  mongodb:
-    image: mongo
-    ports:
-      - "27017:27017"
-
-  localstack:
-    image: localstack/localstack
-    environment:
-      - SERVICES=s3
-    ports:
-      - "4566:4566"
-
-  airflow:
-    build:
-      context: .
-      dockerfile: Dockerfile.airflow
-    ports:
-      - "8080:8080"
-    depends_on:
-      - mysql
-      - mongodb
-      - localstack
-
-  api:
-    build:
-      context: .
-      dockerfile: Dockerfile.api
-    ports:
-      - "8000:8000"
-    depends_on:
-      - mysql
-      - mongodb
-      - localstack
-```
-
-## 3. Construire et démarrer les conteneurs
-
-Exécutez les commandes suivantes pour **construire et démarrer** l'ensemble des services :
-
+## **4. Lancer les services Docker**
 ```bash
 docker-compose up -d --build
 ```
-
-Vérifiez que les conteneurs tournent bien :
-
+Vérifier que tous les conteneurs sont démarrés :
 ```bash
 docker ps
 ```
 
-## 4. Initialisation de la base de données Airflow
+---
 
-Si nécessaire, exécutez :
-
+## **5. Initialiser Airflow**
 ```bash
 docker exec -it airflow airflow db migrate
+docker exec -it airflow airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com
 ```
+Accéder à l’interface Airflow : [http://localhost:8080](http://localhost:8080)
 
-## 5. Déploiement du pipeline ETL
+---
 
-Dans l'interface **Airflow** ([http://localhost:8080](http://localhost:8080)), activez et exécutez le DAG `etl_football_pipeline`.
-
-Ou via la commande CLI :
-
+## **6. Exécuter le pipeline ETL**
+Déclencher manuellement l’ETL via Airflow :
 ```bash
 docker exec -it airflow airflow dags trigger etl_football_pipeline
 ```
+Vérifier les logs :
+```bash
+docker exec -it airflow airflow tasks logs etl_football_pipeline extract_data
+```
 
-## 6. Tester l'API
+---
 
-L'API est accessible via **FastAPI** sur [http://localhost:8000](http://localhost:8000).
+## **7. Tester l'API**
+L’API est accessible sur : [http://localhost:8000](http://localhost:8000)
 
-### 6.1 Vérifier le statut de l'API
-
+### **7.1 Tester les endpoints**
+Vérification du statut des services :
 ```bash
 curl http://localhost:8000/health
 ```
+Accéder aux données :
+```bash
+curl http://localhost:8000/staging
+curl http://localhost:8000/curated
+```
+Documentation interactive : [http://localhost:8000/docs](http://localhost:8000/docs)
 
-### 6.2 Accéder aux endpoints principaux
+---
 
-| Endpoint   | Description                       |
-| ---------- | --------------------------------- |
-| `/raw`     | Liste des fichiers stockés sur S3 |
-| `/staging` | Données transformées dans MySQL   |
-| `/curated` | Données finales dans MongoDB      |
-| `/stats`   | Statistiques générales            |
-| `/health`  | Vérification des services         |
-
-## 7. Arrêter les services
-
-Pour arrêter tous les conteneurs :
-
+## **8. Arrêter et nettoyer le projet**
 ```bash
 docker-compose down
 ```
-
-## 8. Dépannage
-
-### **Problème : Airflow ne se lance pas**
-
-Vérifiez les logs :
-
+Supprimer les volumes de données :
 ```bash
-docker logs airflow --tail 50
+docker volume rm $(docker volume ls -q)
 ```
 
-Essayez de redémarrer Airflow :
+---
 
-```bash
-docker-compose restart airflow
-```
+## **9. Déploiement sur un serveur distant**
+- **Option 1 : Déploiement Docker sur un serveur distant**
+  - Copier les fichiers via `scp`
+  - Lancer `docker-compose up -d --build`
 
-### **Problème : Connexion MySQL refusée**
+- **Option 2 : Utilisation de Kubernetes**
+  - Adapter les configurations à `Helm` ou `Kustomize`
 
-Assurez-vous que MySQL est bien démarré :
+---
 
-```bash
-docker-compose up -d mysql
-```
+## **10. Prochaines étapes**
+- **Ajouter une CI/CD avec GitHub Actions**
+- **Déployer sur AWS/GCP**
+- **Optimiser les performances ETL**
 
-Testez la connexion :
-
-```bash
-docker exec -it mysql mysql -u root -proot -e "SHOW DATABASES;"
-```
-
-### **Problème : API ne répond pas**
-
-Vérifiez que l'API tourne bien :
-
-```bash
-docker ps | grep api
-```
-
-Si besoin, redémarrez l'API :
-
-```bash
-docker-compose restart api
-```
-
-##
+Le projet est maintenant opérationnel.
