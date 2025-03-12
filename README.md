@@ -1,4 +1,4 @@
-````markdown
+
 # Data Lake Project - Installation & Deployment
 
 ## Prérequis
@@ -17,7 +17,7 @@ Clonez le projet depuis le repository GitHub :
 ```bash
 git clone https://github.com/votre-repo/datalake-project.git
 cd datalake-project
-````
+
 
 ## 2. Configuration des fichiers
 
