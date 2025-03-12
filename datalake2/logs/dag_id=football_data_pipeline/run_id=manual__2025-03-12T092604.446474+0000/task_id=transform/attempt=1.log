@@ -1,0 +1,18 @@
+[2025-03-12T09:26:21.760+0000] {local_task_job_runner.py:123} INFO - ::group::Pre task execution logs
+[2025-03-12T09:26:21.784+0000] {taskinstance.py:2614} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: football_data_pipeline.transform manual__2025-03-12T09:26:04.446474+00:00 [queued]>
+[2025-03-12T09:26:21.795+0000] {taskinstance.py:2614} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: football_data_pipeline.transform manual__2025-03-12T09:26:04.446474+00:00 [queued]>
+[2025-03-12T09:26:21.799+0000] {taskinstance.py:2867} INFO - Starting attempt 1 of 2
+[2025-03-12T09:26:21.821+0000] {taskinstance.py:2890} INFO - Executing <Task(PythonOperator): transform> on 2025-03-12 09:26:04.446474+00:00
+[2025-03-12T09:26:21.852+0000] {standard_task_runner.py:72} INFO - Started process 293 to run task
+[2025-03-12T09:26:21.857+0000] {standard_task_runner.py:104} INFO - Running: ['airflow', 'tasks', 'run', 'football_data_pipeline', 'transform', 'manual__2025-03-12T09:26:04.446474+00:00', '--job-id', '4', '--raw', '--subdir', 'DAGS_FOLDER/etl_pipeline.py', '--cfg-path', '/tmp/tmp15wmyp01']
+[2025-03-12T09:26:21.872+0000] {standard_task_runner.py:105} INFO - Job 4: Subtask transform
+[2025-03-12T09:26:21.914+0000] {logging_mixin.py:190} WARNING - /home/airflow/.local/lib/python3.12/site-packages/airflow/settings.py:209 DeprecationWarning: The sql_alchemy_conn option in [core] has been moved to the sql_alchemy_conn option in [database] - the old setting has been used, but please update your config.
+[2025-03-12T09:26:22.014+0000] {task_command.py:467} INFO - Running <TaskInstance: football_data_pipeline.transform manual__2025-03-12T09:26:04.446474+00:00 [running]> on host 3c9497e23d96
+[2025-03-12T09:26:22.139+0000] {taskinstance.py:3134} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='football_data_pipeline' AIRFLOW_CTX_TASK_ID='transform' AIRFLOW_CTX_EXECUTION_DATE='2025-03-12T09:26:04.446474+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-03-12T09:26:04.446474+00:00'
+[2025-03-12T09:26:22.173+0000] {taskinstance.py:732} INFO - ::endgroup::
+[2025-03-12T09:26:31.878+0000] {python.py:240} INFO - Done. Returned value was: None
+[2025-03-12T09:26:31.886+0000] {taskinstance.py:341} INFO - ::group::Post task execution logs
+[2025-03-12T09:26:31.891+0000] {taskinstance.py:353} INFO - Marking task as SUCCESS. dag_id=football_data_pipeline, task_id=transform, run_id=manual__2025-03-12T09:26:04.446474+00:00, execution_date=20250312T092604, start_date=20250312T092621, end_date=20250312T092631
+[2025-03-12T09:26:31.960+0000] {local_task_job_runner.py:266} INFO - Task exited with return code 0
+[2025-03-12T09:26:31.992+0000] {taskinstance.py:3901} INFO - 1 downstream tasks scheduled from follow-on schedule check
+[2025-03-12T09:26:32.004+0000] {local_task_job_runner.py:245} INFO - ::endgroup::

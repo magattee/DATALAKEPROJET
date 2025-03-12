@@ -1,0 +1,9 @@
+pandas
+boto3
+mysql-connector-python
+pymongo
+fastapi
+uvicorn
+apache-airflow
+pymysql
+

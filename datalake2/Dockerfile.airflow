@@ -1,0 +1,5 @@
+# Utilisation de l'image officielle Airflow
+FROM apache/airflow:latest
+
+# Installation de pymongo dans l'image Docker
+RUN pip install --no-cache-dir pymongo
