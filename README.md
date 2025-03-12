@@ -11,37 +11,20 @@ Avant de commencer, assurez-vous d’avoir installé :
 
 ## **2. Cloner le projet**
 ```bash
-git clone https://github.com/votre-repo/datalake-project.git
-cd datalake-project
+git clone https://github.com/magattee/DATALAKEPROJET.git
+cd datalake2
 ```
 
 ---
 
-## **3. Configuration des services**
+## **3. Configuration**
 
-### **3.1 Configuration des variables d’environnement**
-Créer un fichier `.env` à la racine du projet avec :
 ```ini
-MYSQL_HOST=mysql
-MYSQL_USER=root
-MYSQL_PASSWORD=root
-MYSQL_DB=staging
-MYSQL_PORT=3306
-MONGO_URI=mongodb://mongodb:27017/
-S3_ENDPOINT_URL=http://localstack:4566
+pip install -r requirements.txt
 ```
-
-### **3.2 Vérifier `docker-compose.yml`**
-S’assurer que les services suivants sont bien définis :
-- **MySQL** (stockage des données intermédiaires)
-- **MongoDB** (stockage des données finales)
-- **LocalStack** (simule AWS S3)
-- **Airflow** (orchestration ETL)
-- **API FastAPI** (exposition des données)
-
 ---
 
-## **4. Lancer les services Docker**
+## **Lancer les services Docker**
 ```bash
 docker-compose up -d --build
 ```
@@ -49,19 +32,26 @@ Vérifier que tous les conteneurs sont démarrés :
 ```bash
 docker ps
 ```
-
+### Vérifier
+S’assurer que les services suivants sont bien définis :
+- **MySQL** (stockage des données intermédiaires)
+- **MongoDB** (stockage des données finales)
+- **LocalStack** (simule AWS S3)
+- **Airflow** (orchestration ETL)
+- **API FastAPI** (exposition des données)
 ---
 
-## **5. Initialiser Airflow**
+## **acceder Airflow**
+
 ```bash
-docker exec -it airflow airflow db migrate
 docker exec -it airflow airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com
 ```
 Accéder à l’interface Airflow : [http://localhost:8080](http://localhost:8080)
+et tester la pipeline ETL
 
 ---
 
-## **6. Exécuter le pipeline ETL**
+## ** Exécuter le pipeline ETL**
 Déclencher manuellement l’ETL via Airflow :
 ```bash
 docker exec -it airflow airflow dags trigger etl_football_pipeline
@@ -81,7 +71,7 @@ Vérification du statut des services :
 ```bash
 curl http://localhost:8000/health
 ```
-Accéder aux données :
+Accéder aux données exemple:
 ```bash
 curl http://localhost:8000/staging
 curl http://localhost:8000/curated
@@ -89,31 +79,3 @@ curl http://localhost:8000/curated
 Documentation interactive : [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ---
-
-## **8. Arrêter et nettoyer le projet**
-```bash
-docker-compose down
-```
-Supprimer les volumes de données :
-```bash
-docker volume rm $(docker volume ls -q)
-```
-
----
-
-## **9. Déploiement sur un serveur distant**
-- **Option 1 : Déploiement Docker sur un serveur distant**
-  - Copier les fichiers via `scp`
-  - Lancer `docker-compose up -d --build`
-
-- **Option 2 : Utilisation de Kubernetes**
-  - Adapter les configurations à `Helm` ou `Kustomize`
-
----
-
-## **10. Prochaines étapes**
-- **Ajouter une CI/CD avec GitHub Actions**
-- **Déployer sur AWS/GCP**
-- **Optimiser les performances ETL**
-
-Le projet est maintenant opérationnel.
