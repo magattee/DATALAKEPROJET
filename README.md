@@ -1,6 +1,6 @@
 # **Guide d'Installation et de Déploiement**
 
-## **1. Prérequis**
+## ** Prérequis**
 Avant de commencer, assurez-vous d’avoir installé :
 - **Docker** et **Docker Compose**
 - **Git**
@@ -9,7 +9,7 @@ Avant de commencer, assurez-vous d’avoir installé :
 
 ---
 
-## **2. Cloner le projet**
+## ** Cloner le projet**
 ```bash
 git clone https://github.com/magattee/DATALAKEPROJET.git
 cd datalake2
@@ -17,7 +17,7 @@ cd datalake2
 
 ---
 
-## **3. Configuration**
+## ** Configuration**
 
 ```ini
 pip install -r requirements.txt
@@ -63,10 +63,10 @@ docker exec -it airflow airflow tasks logs etl_football_pipeline extract_data
 
 ---
 
-## **7. Tester l'API**
+## ** Tester l'API**
 L’API est accessible sur : [http://localhost:8000](http://localhost:8000)
 
-### **7.1 Tester les endpoints**
+### ** Tester les endpoints**
 Vérification du statut des services :
 ```bash
 curl http://localhost:8000/health
